@@ -1,0 +1,9 @@
+{
+  "name": "Seletor de Fotos de Unhas",
+  "short_name": "Seletor Unhas",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#0b0b0d",
+  "theme_color": "#111111",
+  "description": "Agrupamento local e seleção fina de fotos de unhas com IA."
+}
