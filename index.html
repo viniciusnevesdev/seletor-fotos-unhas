@@ -6,106 +6,19 @@
   <meta name="theme-color" content="#101012">
   <title>Seletor de Fotos de Unhas</title>
   <link rel="manifest" href="./manifest.webmanifest">
-  <link rel="stylesheet" href="./styles.css?v=4">
+  <link rel="stylesheet" href="./styles.css?v=5">
 </head>
 <body>
   <main class="app">
-    <header class="topbar">
-      <div>
-        <p class="eyebrow">PROTÓTIPO HÍBRIDO · V0.4</p>
-        <h1>Seletor de Fotos de Unhas</h1>
-        <p class="sub">Agrupa fotos, aplica a sua régua de gosto e faz seleção final com IA.</p>
-      </div>
-      <button id="resetBtn" class="ghost">Limpar</button>
-    </header>
-
-    <section class="card compact">
-      <div class="sectionTitleRow">
-        <h2>Ajustes rápidos</h2>
-      </div>
-      <div class="grid2 compactGrid">
-        <label>
-          Tamanho da interface
-          <input id="uiScale" type="range" min="80" max="110" value="92">
-        </label>
-        <div class="inlineValueBox">
-          <div class="inlineLabel">Valor</div>
-          <div id="uiScaleValue" class="bigValue">92%</div>
-        </div>
-      </div>
-      <p class="hint">Use esse controle para deixar textos, cartões e botões mais compactos ou maiores. Sua escolha fica salva neste aparelho.</p>
-    </section>
-
-    <section class="card compact">
-      <h2>1. Selecione as fotos</h2>
-      <p>Escolha fotos do mesmo ensaio.</p>
-      <label class="fileButton">Selecionar fotos<input id="photoInput" type="file" accept="image/*" multiple hidden></label>
-      <div id="selectionInfo" class="muted"></div>
-    </section>
-
-    <section class="card compact">
-      <h2>2. Agrupamento local</h2>
-      <div class="row sliderRow">
-        <label>
-          Sensibilidade do agrupamento
-          <input id="threshold" type="range" min="8" max="38" value="22">
-        </label>
-        <div class="inlineValueBox narrow">
-          <div class="inlineLabel">Valor</div>
-          <div id="thresholdValue" class="bigValue">22</div>
-        </div>
-      </div>
-      <p class="hint">Menor = separa mais. Maior = junta fotos mais diferentes.</p>
-      <button id="groupBtn" disabled>Agrupar fotos</button>
-      <div id="groupStatus" class="muted"></div>
-    </section>
-
-    <section class="card compact">
-      <h2>3. Minha régua de seleção</h2>
-      <p class="hint">Isso ensina o sistema sobre o que pesa mais para você.</p>
-
-      <div class="prefsGrid">
-        <label>Reflexo bonito<input data-pref="reflexo" class="prefSlider" type="range" min="0" max="5" value="5"><span id="pref-reflexo" class="prefValue">5</span></label>
-        <label>Limpeza / sem pó<input data-pref="limpeza" class="prefSlider" type="range" min="0" max="5" value="5"><span id="pref-limpeza" class="prefValue">5</span></label>
-        <label>Nitidez<input data-pref="nitidez" class="prefSlider" type="range" min="0" max="5" value="4"><span id="pref-nitidez" class="prefValue">4</span></label>
-        <label>Posição da mão / dedos<input data-pref="pose" class="prefSlider" type="range" min="0" max="5" value="4"><span id="pref-pose" class="prefValue">4</span></label>
-        <label>Visibilidade das unhas<input data-pref="visibilidade" class="prefSlider" type="range" min="0" max="5" value="4"><span id="pref-visibilidade" class="prefValue">4</span></label>
-        <label>Enquadramento / espaço vazio<input data-pref="enquadramento" class="prefSlider" type="range" min="0" max="5" value="2"><span id="pref-enquadramento" class="prefValue">2</span></label>
-        <label>Exposição / sombras<input data-pref="exposicao" class="prefSlider" type="range" min="0" max="5" value="2"><span id="pref-exposicao" class="prefValue">2</span></label>
-      </div>
-
-      <div class="checks">
-        <label class="checkItem"><input id="glitterIntentional" type="checkbox" checked> Glitter, brilho metálico ou cromado podem gerar reflexos muito intensos sem isso ser defeito.</label>
-        <label class="checkItem"><input id="emptySpaceLowImportance" type="checkbox" checked> Espaço vazio / enquadramento têm pouca importância para mim, salvo quando realmente prejudicam a apresentação.</label>
-        <label class="checkItem"><input id="reflectionOnlyIfHides" type="checkbox" checked> Reflexo forte só deve ser penalizado se esconder detalhes da unha ou deformar visualmente o acabamento.</label>
-      </div>
-    </section>
-
-    <section id="groupsSection" class="card compact hidden">
-      <h2>4. Confira os grupos</h2>
-      <div class="infoBox"><strong>Grupo não significa aprovação.</strong><br>Foto única também será avaliada. Você não precisa tocar em nada aqui; é só conferir se fotos parecidas ficaram juntas.</div>
-      <div id="groups"></div>
-    </section>
-
-    <section id="aiSection" class="card compact hidden">
-      <h2>5. Avaliação com IA</h2>
-      <p class="hint">A IA avalia a qualidade, usa sua régua de seleção e depois compara as sobreviventes entre si.</p>
-      <p class="warning"><strong>Não coloque sua chave no GitHub.</strong> Cole-a só aqui.</p>
-      <label>Chave da API OpenAI<input id="apiKey" type="password" autocomplete="off" placeholder="sk-..."></label>
-      <div class="grid3">
-        <label>Modelo<select id="model"><option value="gpt-5.6-luna">GPT-5.6 Luna — mais barato</option><option value="gpt-5.6-terra" selected>GPT-5.6 Terra — recomendado</option><option value="gpt-5.6-sol">GPT-5.6 Sol — mais caro</option></select></label>
-        <label>Candidatas por grupo<select id="maxPerGroup"><option>2</option><option>3</option><option selected>4</option><option>5</option></select></label>
-        <label>Máx. na seleção final<select id="finalCount"><option>3</option><option selected>5</option><option>8</option><option>10</option></select></label>
-      </div>
-      <button id="analyzeBtn">Avaliar e fazer seleção final</button>
-      <div id="aiStatus" class="muted"></div>
-    </section>
-
-    <section id="resultsSection" class="card compact hidden">
-      <h2>Resultado</h2>
-      <div id="results"></div>
-    </section>
+    <header class="topbar"><div><p class="eyebrow">PROTÓTIPO HÍBRIDO · V0.5</p><h1>Seletor de Fotos de Unhas</h1><p class="sub">Agrupa fotos, aplica a sua régua de gosto e faz seleção final com IA.</p></div><button id="resetBtn" class="ghost">Limpar</button></header>
+    <section class="card compact"><h2>Ajustes rápidos</h2><div class="grid2 compactGrid"><label>Tamanho da interface<input id="uiScale" type="range" min="55" max="115" step="1" value="92"></label><div class="inlineValueBox"><div class="inlineLabel">Valor</div><div id="uiScaleValue" class="bigValue">92%</div></div></div><p class="hint">Agora você pode reduzir até 55%. O controle diminui textos, cartões, botões, espaçamentos e cantos proporcionalmente. Sua escolha fica salva neste aparelho.</p></section>
+    <section class="card compact"><h2>1. Selecione as fotos</h2><p>Escolha fotos do mesmo ensaio.</p><label class="fileButton">Selecionar fotos<input id="photoInput" type="file" accept="image/*" multiple hidden></label><div id="selectionInfo" class="muted"></div></section>
+    <section class="card compact"><h2>2. Agrupamento local</h2><div class="row sliderRow"><label>Sensibilidade do agrupamento<input id="threshold" type="range" min="8" max="38" value="22"></label><div class="inlineValueBox narrow"><div class="inlineLabel">Valor</div><div id="thresholdValue" class="bigValue">22</div></div></div><p class="hint">Menor = separa mais. Maior = junta fotos mais diferentes.</p><button id="groupBtn" disabled>Agrupar fotos</button><div id="groupStatus" class="muted"></div></section>
+    <section class="card compact"><h2>3. Minha régua de seleção</h2><p class="hint">Isso ensina o sistema sobre o que pesa mais para você.</p><div class="prefsGrid"><label>Reflexo bonito<input data-pref="reflexo" class="prefSlider" type="range" min="0" max="5" value="5"><span id="pref-reflexo" class="prefValue">5</span></label><label>Limpeza / sem pó<input data-pref="limpeza" class="prefSlider" type="range" min="0" max="5" value="5"><span id="pref-limpeza" class="prefValue">5</span></label><label>Nitidez<input data-pref="nitidez" class="prefSlider" type="range" min="0" max="5" value="4"><span id="pref-nitidez" class="prefValue">4</span></label><label>Posição da mão / dedos<input data-pref="pose" class="prefSlider" type="range" min="0" max="5" value="4"><span id="pref-pose" class="prefValue">4</span></label><label>Visibilidade das unhas<input data-pref="visibilidade" class="prefSlider" type="range" min="0" max="5" value="4"><span id="pref-visibilidade" class="prefValue">4</span></label><label>Enquadramento / espaço vazio<input data-pref="enquadramento" class="prefSlider" type="range" min="0" max="5" value="2"><span id="pref-enquadramento" class="prefValue">2</span></label><label>Exposição / sombras<input data-pref="exposicao" class="prefSlider" type="range" min="0" max="5" value="2"><span id="pref-exposicao" class="prefValue">2</span></label></div><div class="checks"><label class="checkItem"><input id="glitterIntentional" type="checkbox" checked> Glitter, brilho metálico ou cromado podem gerar reflexos muito intensos sem isso ser defeito.</label><label class="checkItem"><input id="emptySpaceLowImportance" type="checkbox" checked> Espaço vazio / enquadramento têm pouca importância para mim, salvo quando realmente prejudicam a apresentação.</label><label class="checkItem"><input id="reflectionOnlyIfHides" type="checkbox" checked> Reflexo forte só deve ser penalizado se esconder detalhes da unha ou deformar visualmente o acabamento.</label></div></section>
+    <section id="groupsSection" class="card compact hidden"><h2>4. Confira os grupos</h2><div class="infoBox"><strong>Grupo não significa aprovação.</strong><br>Foto única também será avaliada. Você não precisa tocar em nada aqui; é só conferir se fotos parecidas ficaram juntas.</div><div id="groups"></div></section>
+    <section id="aiSection" class="card compact hidden"><h2>5. Avaliação com IA</h2><p class="hint">A IA avalia a qualidade, usa sua régua de seleção e depois compara as sobreviventes entre si.</p><p class="warning"><strong>Não coloque sua chave no GitHub.</strong> Cole-a só aqui.</p><label>Chave da API OpenAI<input id="apiKey" type="password" autocomplete="off" placeholder="sk-..."></label><div class="grid3"><label>Modelo<select id="model"><option value="gpt-5.6-luna">GPT-5.6 Luna — mais barato</option><option value="gpt-5.6-terra" selected>GPT-5.6 Terra — recomendado</option><option value="gpt-5.6-sol">GPT-5.6 Sol — mais caro</option></select></label><label>Candidatas por grupo<select id="maxPerGroup"><option>2</option><option>3</option><option selected>4</option><option>5</option></select></label><label>Máx. na seleção final<select id="finalCount"><option>3</option><option selected>5</option><option>8</option><option>10</option></select></label></div><button id="analyzeBtn">Avaliar e fazer seleção final</button><div id="aiStatus" class="muted"></div></section>
+    <section id="resultsSection" class="card compact hidden"><h2>Resultado</h2><div id="results"></div></section>
   </main>
-  <script src="./app.js?v=4"></script>
+  <script src="./app.js?v=5"></script>
 </body>
 </html>
