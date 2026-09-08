@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "description": "Perfil local de preferências para seleção de fotos de unhas. O PWA usa este arquivo como estrutura; avaliações reais ficam salvas no aparelho e podem ser exportadas/importadas em JSON.",
+  "fixedUiScale": 0.75,
+  "principles": [
+    "Não confundir glitter, cromado ou brilho metálico intencional com flash estourado automaticamente.",
+    "Espaço vazio pode ser aceitável e corrigível com corte.",
+    "Um defeito corrigível não deve ter o mesmo peso de um defeito irreversível.",
+    "Preferências demonstradas pelo usuário em fotos reais têm prioridade sobre regras estéticas genéricas."
+  ],
+  "feedbackScale": ["gostei_muito", "gostei", "neutro", "nao_gostei"],
+  "examples": []
+}
