@@ -6,93 +6,17 @@
   <meta name="theme-color" content="#111111" />
   <title>Seletor de Fotos de Unhas</title>
   <link rel="manifest" href="./manifest.webmanifest" />
-  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css?v=2" />
 </head>
 <body>
-  <main class="app">
-    <header>
-      <div>
-        <p class="eyebrow">PROTÓTIPO HÍBRIDO</p>
-        <h1>Seletor de Fotos de Unhas</h1>
-        <p class="sub">Agrupa fotos parecidas no aparelho e usa IA apenas na seleção fina.</p>
-      </div>
-      <button id="resetBtn" class="ghost">Limpar</button>
-    </header>
-
-    <section class="card">
-      <h2>1. Selecione as fotos</h2>
-      <p>Escolha de 10 a 50 fotos do mesmo ensaio.</p>
-      <label class="fileButton">
-        Selecionar fotos
-        <input id="photoInput" type="file" accept="image/*" multiple hidden />
-      </label>
-      <div id="selectionInfo" class="muted"></div>
-    </section>
-
-    <section class="card">
-      <h2>2. Agrupamento local</h2>
-      <div class="row">
-        <label>
-          Sensibilidade
-          <input id="threshold" type="range" min="8" max="38" value="22" />
-        </label>
-        <span id="thresholdValue">22</span>
-      </div>
-      <p class="hint">Menor = grupos mais rigorosos. Maior = junta fotos mais diferentes.</p>
-      <button id="groupBtn" disabled>Agrupar fotos</button>
-      <div id="groupStatus" class="muted"></div>
-    </section>
-
-    <section id="groupsSection" class="card hidden">
-      <div class="sectionHead">
-        <div>
-          <h2>3. Grupos encontrados</h2>
-          <p class="hint">O sistema marca automaticamente até 4 candidatas de cada grupo para a análise fina.</p>
-        </div>
-      </div>
-      <div id="groups"></div>
-    </section>
-
-    <section id="aiSection" class="card hidden">
-      <h2>4. Seleção fina com IA</h2>
-      <p class="warning"><strong>Nunca coloque sua chave no código ou no GitHub.</strong> Cole-a apenas aqui. Este protótipo mantém a chave somente na memória desta aba.</p>
-      <label>
-        Chave da API OpenAI
-        <input id="apiKey" type="password" autocomplete="off" placeholder="sk-..." />
-      </label>
-      <div class="grid2">
-        <label>
-          Modelo
-          <select id="model">
-            <option value="gpt-5.6-luna">GPT-5.6 Luna — mais barato</option>
-            <option value="gpt-5.6-terra" selected>GPT-5.6 Terra — recomendado</option>
-            <option value="gpt-5.6-sol">GPT-5.6 Sol — mais caro</option>
-          </select>
-        </label>
-        <label>
-          Máx. por grupo
-          <select id="maxPerGroup">
-            <option>2</option>
-            <option>3</option>
-            <option selected>4</option>
-            <option>5</option>
-          </select>
-        </label>
-      </div>
-      <button id="analyzeBtn">Analisar candidatas</button>
-      <div id="aiStatus" class="muted"></div>
-    </section>
-
-    <section id="resultsSection" class="card hidden">
-      <h2>Resultado</h2>
-      <div id="results"></div>
-    </section>
-
-    <footer>
-      <p>Protótipo v0.1 — fotos agrupadas localmente; apenas candidatas selecionadas são enviadas à API.</p>
-    </footer>
-  </main>
-
-  <script src="./app.js"></script>
-</body>
-</html>
+<main class="app">
+<header><div><p class="eyebrow">PROTÓTIPO HÍBRIDO · V0.2</p><h1>Seletor de Fotos de Unhas</h1><p class="sub">Agrupa fotos parecidas no aparelho e usa IA apenas na seleção fina.</p></div><button id="resetBtn" class="ghost">Limpar</button></header>
+<section class="card"><h2>1. Selecione as fotos</h2><p>Escolha as fotos do mesmo ensaio.</p><label class="fileButton">Selecionar fotos<input id="photoInput" type="file" accept="image/*" multiple hidden /></label><div id="selectionInfo" class="muted"></div></section>
+<section class="card"><h2>2. Agrupamento local</h2><div class="row"><label>Sensibilidade<input id="threshold" type="range" min="8" max="38" value="22" /></label><span id="thresholdValue">22</span></div><p class="hint">Menor = separa mais. Maior = junta fotos mais diferentes.</p><button id="groupBtn" disabled>Agrupar fotos</button><div id="groupStatus" class="muted"></div></section>
+<section id="groupsSection" class="card hidden"><h2>3. Confira os grupos</h2><div class="infoBox"><strong>Você não precisa escolher nenhuma foto.</strong><br>Confira apenas se as fotos parecidas ficaram juntas. As candidatas para a IA são escolhidas automaticamente.</div><div id="groups"></div></section>
+<section id="aiSection" class="card hidden"><h2>4. Seleção fina com IA</h2><p class="hint">Se os grupos parecem corretos, continue. A IA vai comparar automaticamente as candidatas de cada grupo.</p><p class="warning"><strong>Não coloque sua chave no GitHub.</strong> Cole-a somente abaixo; ela fica na memória desta aba.</p><label>Chave da API OpenAI<input id="apiKey" type="password" autocomplete="off" placeholder="sk-..." /></label><div class="grid2"><label>Modelo<select id="model"><option value="gpt-5.6-luna">GPT-5.6 Luna — mais barato</option><option value="gpt-5.6-terra" selected>GPT-5.6 Terra — recomendado</option><option value="gpt-5.6-sol">GPT-5.6 Sol — mais caro</option></select></label><label>Candidatas por grupo<select id="maxPerGroup"><option>2</option><option>3</option><option selected>4</option><option>5</option></select></label></div><button id="analyzeBtn">Analisar automaticamente</button><div id="aiStatus" class="muted"></div></section>
+<section id="resultsSection" class="card hidden"><h2>Resultado</h2><div id="results"></div></section>
+<footer><p>Protótipo v0.2 — agrupamento local + seleção fina por IA.</p></footer>
+</main>
+<script src="./app.js?v=2"></script>
+</body></html>
