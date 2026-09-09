@@ -1,56 +1,100 @@
-# Seletor de Fotos de Unhas — protótipo híbrido v0.1
+# Seletor Inteligente de Fotos de Unhas — v1.0
 
-## O que ele faz
+PWA para selecionar fotos de unhas muito parecidas entre si, combinando agrupamento local, análise multimodal com IA e aprendizado das preferências reais do usuário.
 
-1. Você seleciona um lote de fotos.
-2. O navegador calcula uma assinatura visual localmente.
-3. As fotos são agrupadas por semelhança sem enviar imagens para servidor.
-4. O sistema pré-seleciona até 4 candidatas por grupo.
-5. Apenas essas candidatas são enviadas à API OpenAI em `detail: high`.
-6. A IA ranqueia cada grupo considerando reflexo, poeira/resíduos, nitidez, pose, enquadramento e apresentação.
+## Fluxo principal
+
+1. Seleciona 2–60 fotos do mesmo ensaio.
+2. Calcula assinatura visual e nitidez localmente, sem custo de API.
+3. Agrupa fotos semelhantes e escolhe candidatas diversificadas por grupo.
+4. Mostra uma estimativa de custo antes da análise.
+5. Envia apenas candidatas para a OpenAI em `detail: high`.
+6. A IA gera diagnóstico específico, ranking, confiança, comparação entre fotos e crop sugerido quando apropriado.
+7. Um número limitado de sobreviventes é reenviado para a comparação final.
+8. O app mostra Seleção da IA, Minha escolha e Finais definitivas.
+9. O usuário avalia fotos grandes, registra comentários/tags e ensina seu gosto.
+10. As fotos escolhidas podem ser compartilhadas com o Fotos como cópias novas sem a data EXIF original.
+
+## Aprendizado de preferência
+
+O perfil v2 combina:
+
+- ❤️ Gostei muito / 👍 Gostei / ➖ Aceitável / 👎 Não gostei;
+- comentário livre;
+- tags positivas e negativas (reflexo, limpeza, nitidez, pose, visibilidade, exposição e enquadramento);
+- indicação de problema corrigível por crop/edição ou aceitável sem correção;
+- ⭐ finais definitivas;
+- comparações A/B gratuitas entre fotos parecidas;
+- resumo automático local;
+- refinamento opcional do resumo por IA;
+- importação/exportação do perfil em JSON;
+- gerenciamento e exclusão de avaliações antigas.
+
+A v1.0 migra automaticamente as avaliações salvas pela versão anterior em `seletor-unhas-training-v1`.
+
+## Custo
+
+Antes de analisar, o app estima uma faixa de custo com base em:
+
+- modelo escolhido;
+- quantidade de candidatas por grupo;
+- dimensões das imagens;
+- limite de finalistas que podem ser reenviadas.
+
+Depois da execução, o app usa `usage.input_tokens` e `usage.output_tokens` retornados pela Responses API para calcular o custo aproximado real da execução. O câmbio US$ → R$ pode ser ajustado no próprio PWA.
+
+## Sessão e histórico
+
+- A sessão atual é salva em IndexedDB para poder ser restaurada após fechamento/recarregamento quando o navegador tiver espaço disponível.
+- O histórico guarda os últimos ensaios, quantidade de fotos, escolhidas, custo e concordância entre IA e usuário.
+- As imagens escolhidas de sessões recentes também são armazenadas localmente quando houver espaço.
+
+## Diagnóstico e correções
+
+A IA é instruída a indicar onde está cada problema em:
+
+- reflexo;
+- limpeza/pó;
+- nitidez;
+- posição da mão/dedos;
+- visibilidade das unhas;
+- exposição;
+- enquadramento.
+
+Também informa por que uma foto perdeu para outra, confiança da avaliação e empates. Quando sugere corte, o PWA pode mostrar uma prévia de crop sem alterar o original.
+
+## HEIC/HEIF e iPhone
+
+O app tenta `createImageBitmap` primeiro e, se falhar, usa um fallback com `<img>`, aumentando a compatibilidade com arquivos vindos do Fotos no iPhone. Arquivos que o WebKit não conseguir decodificar ainda precisarão ser convertidos individualmente.
 
 ## Segurança da API
 
-**Não coloque sua chave em nenhum arquivo deste repositório.**
-A chave é digitada manualmente na página e fica apenas na memória da aba atual.
+A chave digitada diretamente nunca é salva pelo PWA. Para uso mais seguro, o repositório inclui:
 
-Este é um protótipo pessoal. Em uma versão definitiva, a chamada à OpenAI deve passar por um backend/proxy para que a chave não fique acessível no navegador.
+- `openai-proxy-worker.js` — Cloudflare Worker opcional;
+- `PROXY_SETUP.md` — instruções de implantação.
 
-## Publicação rápida no GitHub Pages
+Quando um proxy é configurado, a chave fica como secret no Worker e não precisa ser digitada no navegador.
 
-1. Abra `Settings` no repositório.
-2. Abra `Pages`.
-3. Em `Build and deployment`, escolha **Deploy from a branch**.
-4. Selecione a branch `main` e a pasta `/ (root)`.
-5. Salve.
+## Publicação
 
-O endereço esperado é:
+GitHub Pages:
+
 `https://viniciusnevesdev.github.io/seletor-fotos-unhas/`
 
-## Uso no iPhone
+## Arquivos principais
 
-1. Abra o endereço no Safari.
-2. Selecione as fotos.
-3. Toque em **Agrupar fotos**.
-4. Confira os grupos; toque em qualquer foto para incluir/remover da análise fina.
-5. Cole sua chave da API.
-6. Deixe `GPT-5.6 Terra` inicialmente.
-7. Toque em **Analisar candidatas**.
-8. Após validar o funcionamento, Safari → Compartilhar → Adicionar à Tela de Início.
+- `index.html` — interface e migração de dados antigos;
+- `styles.css` — interface compacta (escala fixa 75%);
+- `app.js` — agrupamento, IA, custo, treinamento, sessão, histórico e exportação;
+- `preference-profile.json` — esquema do perfil v2;
+- `sw.js` — cache do PWA;
+- `openai-proxy-worker.js` — proxy seguro opcional;
+- `PROXY_SETUP.md` — configuração do proxy.
 
-## Limitações desta primeira versão
+## Limitações conhecidas
 
-- O agrupamento usa perceptual hash simples e serve como MVP; ele ainda não entende especificamente unhas.
-- Fotos com composição muito parecida mas iluminação muito diferente podem cair no mesmo grupo.
-- A IA pode errar defeitos microscópicos. O objetivo inicial é ranking/pré-seleção, não substituir decisão humana em 100%.
-- A chamada direta do navegador à API é adequada apenas para teste pessoal; a versão definitiva deve usar backend.
-
-## Próximas melhorias
-
-- feature embedding mais robusto para agrupamento;
-- recorte automático da mão/unhas antes de comparar;
-- detector local de blur/exposição;
-- estimativa de custo antes de enviar;
-- backend seguro para a API;
-- salvar suas escolhas para aprender preferências;
-- comparação entre ranking da IA e sua seleção manual.
+- O agrupamento ainda usa perceptual hash simples; Apple Vision/embeddings específicos podem melhorar essa etapa no futuro.
+- O crop sugerido pela IA é uma aproximação visual e deve ser tratado como prévia, não edição profissional automática.
+- IndexedDB depende da cota de armazenamento do Safari; lotes muito grandes podem não ser totalmente recuperáveis.
+- A IA pode errar detalhes microscópicos; o aprendizado humano e as comparações A/B existem justamente para reduzir esse desvio ao longo do uso.
