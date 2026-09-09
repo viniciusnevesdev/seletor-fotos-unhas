@@ -43,6 +43,8 @@ Antes de analisar, o app estima uma faixa de custo com base em:
 
 Depois da execução, o app usa `usage.input_tokens` e `usage.output_tokens` retornados pela Responses API para calcular o custo aproximado real da execução. O câmbio US$ → R$ pode ser ajustado no próprio PWA.
 
+O botão **Refinar resumo com IA** trabalha só com o histórico textual, pede confirmação antes de gastar e informa o custo aproximado dessa atualização separadamente.
+
 ## Sessão e histórico
 
 - A sessão atual é salva em IndexedDB para poder ser restaurada após fechamento/recarregamento quando o navegador tiver espaço disponível.
@@ -71,10 +73,10 @@ O app tenta `createImageBitmap` primeiro e, se falhar, usa um fallback com `<img
 
 A chave digitada diretamente nunca é salva pelo PWA. Para uso mais seguro, o repositório inclui:
 
-- `openai-proxy-worker.js` — Cloudflare Worker opcional;
-- `PROXY_SETUP.md` — instruções de implantação.
+- `cloudflare-worker.js` — Cloudflare Worker opcional com restrição de origem e modelos;
+- `PROXY-SEGURO.md` — instruções de implantação.
 
-Quando um proxy é configurado, a chave fica como secret no Worker e não precisa ser digitada no navegador.
+Quando um proxy é configurado, a chave fica como Secret no Worker e não precisa ser digitada no navegador.
 
 ## Publicação
 
@@ -87,14 +89,16 @@ GitHub Pages:
 - `index.html` — interface e migração de dados antigos;
 - `styles.css` — interface compacta (escala fixa 75%);
 - `app.js` — agrupamento, IA, custo, treinamento, sessão, histórico e exportação;
+- `v10-fixes.js` — ajustes finais de A/B, histórico e métrica de acerto;
 - `preference-profile.json` — esquema do perfil v2;
 - `sw.js` — cache do PWA;
-- `openai-proxy-worker.js` — proxy seguro opcional;
-- `PROXY_SETUP.md` — configuração do proxy.
+- `cloudflare-worker.js` — proxy seguro opcional;
+- `PROXY-SEGURO.md` — configuração do proxy.
 
 ## Limitações conhecidas
 
 - O agrupamento ainda usa perceptual hash simples; Apple Vision/embeddings específicos podem melhorar essa etapa no futuro.
 - O crop sugerido pela IA é uma aproximação visual e deve ser tratado como prévia, não edição profissional automática.
 - IndexedDB depende da cota de armazenamento do Safari; lotes muito grandes podem não ser totalmente recuperáveis.
+- Compatibilidade HEIC/HEIF depende do que a versão do WebKit consegue decodificar.
 - A IA pode errar detalhes microscópicos; o aprendizado humano e as comparações A/B existem justamente para reduzir esse desvio ao longo do uso.
