@@ -61,7 +61,7 @@
 
   <section id="aiSection" class="card compact hidden">
     <h2>6. Avaliação com IA</h2>
-    <div class="securityBox"><strong>Forma de conexão</strong><p>Para maior segurança, use um proxy próprio. A chave digitada abaixo nunca é salva pelo PWA.</p></div>
+    <div class="securityBox"><strong>Forma de conexão</strong><p>Para maior segurança, use um proxy próprio. A chave digitada abaixo nunca é salva pelo PWA. O repositório inclui <code>cloudflare-worker.js</code> e <code>PROXY-SEGURO.md</code> para configurar esse modo.</p></div>
     <label>Proxy seguro opcional <input id="proxyUrl" type="url" placeholder="https://seu-worker.workers.dev"></label>
     <label>Ou chave da API OpenAI <input id="apiKey" type="password" autocomplete="off" placeholder="sk-..."></label>
     <div class="grid4">
@@ -112,5 +112,6 @@
 })();
 </script>
 <script src="./app.js?v=10"></script>
+<script src="./v10-fixes.js?v=10"></script>
 </body>
 </html>
