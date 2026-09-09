@@ -1,9 +1,99 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#101012"><title>Seletor de Fotos de Unhas</title><link rel="manifest" href="./manifest.webmanifest"><link rel="stylesheet" href="./styles.css?v=9"></head><body><main class="app">
-<header class="topbar"><div><p class="eyebrow">PROTÓTIPO HÍBRIDO · V0.9</p><h1>Seletor de Fotos de Unhas</h1><p class="sub">Seleciona, aprende com suas avaliações e entrega suas melhores fotos.</p></div><button id="resetBtn" class="ghost">Limpar</button></header>
-<section class="card compact"><h2>1. Selecione as fotos</h2><p>Escolha fotos do mesmo ensaio.</p><label class="fileButton">Selecionar fotos<input id="photoInput" type="file" accept="image/*" multiple hidden></label><div id="selectionInfo" class="muted"></div></section>
-<section class="card compact"><h2>2. Agrupamento local</h2><div class="row sliderRow"><label>Sensibilidade<input id="threshold" type="range" min="8" max="38" value="22"></label><strong id="thresholdValue">22</strong></div><p class="hint">Menor separa mais; maior junta fotos mais diferentes.</p><button id="groupBtn" disabled>Agrupar fotos</button><div id="groupStatus" class="muted"></div></section>
-<section class="card compact"><h2>3. Perfil aprendido</h2><p class="hint">O app aprende com fotos reais que você avaliou. Suas avaliações ficam em um perfil JSON salvo neste aparelho.</p><div class="profileRow"><strong id="trainingCount">0 avaliações salvas</strong><button id="exportProfileBtn" class="ghost small">Exportar JSON</button><label class="ghost small importBtn">Importar JSON<input id="importProfileInput" type="file" accept="application/json,.json" hidden></label></div></section>
-<section id="groupsSection" class="card compact hidden"><h2>4. Confira os grupos</h2><div class="infoBox">Você não precisa escolher manualmente aqui. As candidatas seguem para a IA.</div><div id="groups"></div></section>
-<section id="aiSection" class="card compact hidden"><h2>5. Avaliação com IA</h2><p class="hint">A IA recebe também um resumo das suas avaliações anteriores.</p><label>Chave da API OpenAI<input id="apiKey" type="password" autocomplete="off" placeholder="sk-..."></label><div class="grid3"><label>Modelo<select id="model"><option value="gpt-5.6-luna">GPT-5.6 Luna</option><option value="gpt-5.6-terra" selected>GPT-5.6 Terra</option><option value="gpt-5.6-sol">GPT-5.6 Sol</option></select></label><label>Candidatas/grupo<select id="maxPerGroup"><option>2</option><option>3</option><option selected>4</option><option>5</option></select></label><label>Seleção final<select id="finalCount"><option>3</option><option selected>5</option><option>8</option><option>10</option></select></label></div><button id="analyzeBtn">Avaliar e selecionar</button><div id="aiStatus" class="muted"></div></section>
-<section id="resultsSection" class="card compact hidden"><h2>6. Suas melhores fotos</h2><p class="hint">A seleção da IA aparece imediatamente. Conforme você avalia, “Minha escolha” é atualizada automaticamente.</p><div class="resultTabs"><button id="showAiBtn" class="tabBtn chosen">✨ Seleção da IA</button><button id="showMineBtn" class="tabBtn">❤️ Minha escolha <span id="mineCount"></span></button></div><div class="photosExportNote"><strong>Salvar no Fotos com a data de agora</strong><span>O app cria uma nova cópia em alta qualidade sem a data EXIF da câmera. Assim ela não deve voltar para o dia em que foi fotografada.</span></div><div id="chosenGallery"></div><h3 class="detailsTitle">7. Avalie e ensine seu gosto</h3><p class="hint"><strong>Agora cada foto aparece grande.</strong> Avalie logo abaixo dela e depois continue descendo para a próxima. Toque na própria foto se quiser abrir em tela cheia.</p><div id="results"></div></section>
-</main><script src="./app.js?v=8"></script><script>(function(){const r=document.getElementById('results');if(!r)return;r.addEventListener('click',e=>{const img=e.target.closest('.trainingCard>img');if(!img)return;const card=img.closest('.trainingCard');const label=card&&card.querySelector('.scoreLine strong')?card.querySelector('.scoreLine strong').textContent:'Foto';const o=document.createElement('div');o.className='viewer';o.innerHTML='<div class="viewerTop"><strong></strong><button class="ghost viewerClose">Fechar</button></div><img><div class="viewerHint">Toque em Fechar para voltar à avaliação.</div>';o.querySelector('.viewerTop strong').textContent=label;o.querySelector('img').src=img.src;o.querySelector('.viewerClose').onclick=()=>o.remove();o.onclick=x=>{if(x.target===o)o.remove()};document.body.appendChild(o)});})();</script></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#101012">
+  <title>Seletor de Fotos de Unhas</title>
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="stylesheet" href="./styles.css?v=10">
+</head>
+<body>
+<main class="app">
+  <header class="topbar">
+    <div><p class="eyebrow">SELETOR INTELIGENTE · V1.0</p><h1>Seletor de Fotos de Unhas</h1><p class="sub">Agrupa, compara, aprende seu gosto e entrega as melhores fotos.</p></div>
+    <button id="resetBtn" class="ghost">Limpar</button>
+  </header>
+
+  <section id="restoreCard" class="card hidden">
+    <h2>Sessão recuperável</h2>
+    <p id="restoreInfo" class="hint"></p>
+    <div class="buttonRow"><button id="restoreBtn">Restaurar sessão</button><button id="discardRestoreBtn" class="ghost">Descartar</button></div>
+  </section>
+
+  <section class="card compact">
+    <h2>1. Selecione as fotos</h2>
+    <label>Nome do ensaio <input id="sessionName" type="text" placeholder="Ex.: Glitter prata — cliente Ana"></label>
+    <label class="fileButton">Selecionar fotos<input id="photoInput" type="file" accept="image/*,.heic,.heif" multiple hidden></label>
+    <div id="selectionInfo" class="muted"></div>
+  </section>
+
+  <section class="card compact">
+    <h2>2. Agrupamento local</h2>
+    <div class="row sliderRow"><label>Sensibilidade<input id="threshold" type="range" min="8" max="38" value="22"></label><strong id="thresholdValue">22</strong></div>
+    <p class="hint">Menor separa mais; maior junta fotos mais diferentes. Essa etapa não usa API.</p>
+    <button id="groupBtn" disabled>Agrupar fotos</button>
+    <div id="groupStatus" class="muted"></div>
+  </section>
+
+  <section class="card compact">
+    <h2>3. Perfil aprendido</h2>
+    <p class="hint">O sistema aprende com avaliações, comentários, tags e comparações A/B.</p>
+    <div class="profileRow"><strong id="trainingCount"></strong><button id="exportProfileBtn" class="ghost small">Exportar JSON</button><label class="ghost small importBtn">Importar JSON<input id="importProfileInput" type="file" accept="application/json,.json" hidden></label></div>
+    <div class="profileSummaryBox"><strong>Resumo automático</strong><p id="profileSummary"></p><ul id="profileRules"></ul></div>
+    <div class="buttonRow"><button id="refineProfileBtn" class="ghost">Refinar resumo com IA</button><button id="resetLearningBtn" class="ghost danger">Apagar aprendizado</button></div>
+    <details class="manageLearning"><summary>Gerenciar avaliações salvas</summary><div id="learningExamples"></div></details>
+    <div class="accuracyBox"><strong id="accuracyValue"></strong><span id="accuracyHint"></span></div>
+  </section>
+
+  <section id="groupsSection" class="card compact hidden">
+    <h2>4. Confira os grupos</h2>
+    <div class="infoBox">Você não precisa escolher manualmente aqui. As candidatas seguem para a IA.</div>
+    <div id="groups"></div>
+  </section>
+
+  <section id="trainingSection" class="card compact hidden">
+    <h2>5. Treinar meu gosto — grátis</h2>
+    <p class="hint">Compare duas fotos parecidas. Isso não usa API e ensina preferências relativas mesmo quando é difícil explicar o motivo.</p>
+    <div id="pairArea"></div>
+    <button id="nextPairBtn" class="ghost">Pular para outro par</button>
+  </section>
+
+  <section id="aiSection" class="card compact hidden">
+    <h2>6. Avaliação com IA</h2>
+    <div class="securityBox"><strong>Forma de conexão</strong><p>Para maior segurança, use um proxy próprio. A chave digitada abaixo nunca é salva pelo PWA.</p></div>
+    <label>Proxy seguro opcional <input id="proxyUrl" type="url" placeholder="https://seu-worker.workers.dev"></label>
+    <label>Ou chave da API OpenAI <input id="apiKey" type="password" autocomplete="off" placeholder="sk-..."></label>
+    <div class="grid4">
+      <label>Modelo<select id="model"><option value="gpt-5.6-luna">GPT-5.6 Luna</option><option value="gpt-5.6-terra" selected>GPT-5.6 Terra</option><option value="gpt-5.6-sol">GPT-5.6 Sol</option></select></label>
+      <label>Candidatas/grupo<select id="maxPerGroup"><option>2</option><option>3</option><option selected>4</option><option>5</option></select></label>
+      <label>Máx. finalistas<input id="maxFinalists" type="number" min="4" max="24" value="12"></label>
+      <label>Seleção final<select id="finalCount"><option>3</option><option selected>5</option><option>8</option><option>10</option></select></label>
+    </div>
+    <label>Câmbio usado na estimativa (US$ → R$) <input id="usdBrl" type="number" min="1" max="20" step="0.01" value="5.10"></label>
+    <div id="costEstimate" class="costBox"></div>
+    <button id="analyzeBtn">Avaliar e selecionar</button>
+    <div id="aiStatus" class="muted"></div>
+  </section>
+
+  <section id="resultsSection" class="card compact hidden">
+    <h2>7. Suas melhores fotos</h2>
+    <div id="costAfter" class="costBox"></div>
+    <div class="resultTabs"><button id="showAiBtn" class="tabBtn chosen">✨ Seleção da IA</button><button id="showMineBtn" class="tabBtn">❤️ Minha escolha <span id="mineCount"></span></button><button id="showManualBtn" class="tabBtn">⭐ Finais definitivas <span id="manualCount"></span></button></div>
+    <div class="photosExportNote"><strong>Salvar no Fotos com a data de agora</strong><span>O app cria uma nova cópia em alta qualidade sem a data EXIF original.</span></div>
+    <div id="chosenGallery"></div>
+    <h3 class="detailsTitle">8. Avalie e ensine seu gosto</h3>
+    <p class="hint"><strong>Cada foto aparece grande.</strong> Toque para ampliar, veja o diagnóstico, marque o que gostou/não gostou e diga se o problema é corrigível.</p>
+    <div id="results"></div>
+  </section>
+
+  <section class="card compact">
+    <h2>Histórico de ensaios</h2>
+    <p class="hint">Guarda resumo, custo, concordância e as imagens escolhidas de sessões recentes neste aparelho.</p>
+    <div id="historyList"></div>
+    <button id="clearHistoryBtn" class="ghost danger small">Apagar histórico</button>
+  </section>
+</main>
+<script src="./app.js?v=10"></script>
+</body>
+</html>
