@@ -1,13 +1,21 @@
 {
-  "schemaVersion": 1,
-  "description": "Perfil local de preferências para seleção de fotos de unhas. O PWA usa este arquivo como estrutura; avaliações reais ficam salvas no aparelho e podem ser exportadas/importadas em JSON.",
+  "schemaVersion": 2,
+  "description": "Estrutura de perfil local do Seletor Inteligente de Fotos de Unhas. O PWA aprende com avaliações, tags, comentários e comparações A/B; dados reais ficam no aparelho e podem ser exportados/importados.",
   "fixedUiScale": 0.75,
   "principles": [
+    "Preferências demonstradas pelo usuário em fotos reais têm prioridade sobre regras estéticas genéricas.",
     "Não confundir glitter, cromado ou brilho metálico intencional com flash estourado automaticamente.",
     "Espaço vazio pode ser aceitável e corrigível com corte.",
     "Um defeito corrigível não deve ter o mesmo peso de um defeito irreversível.",
-    "Preferências demonstradas pelo usuário em fotos reais têm prioridade sobre regras estéticas genéricas."
+    "Empates e baixa confiança devem ser expostos ao usuário, não escondidos por uma nota artificialmente precisa."
   ],
   "feedbackScale": ["gostei_muito", "gostei", "neutro", "nao_gostei"],
-  "examples": []
+  "examples": [],
+  "pairwise": [],
+  "learnedProfile": {
+    "summary": "Ainda há poucos exemplos para resumir seu gosto.",
+    "rules": [],
+    "updatedAt": null,
+    "source": "local"
+  }
 }
