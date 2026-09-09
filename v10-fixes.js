@@ -1,5 +1,6 @@
 // Ajustes finais da v1.0: faz o treino A/B influenciar a IA de verdade,
-// registra escolhas finais no histórico e evita custo silencioso ao refinar o perfil.
+// registra escolhas finais no histórico, evita custo silencioso ao refinar
+// o perfil e evita contar a sessão atual duas vezes na métrica de acerto.
 (function(){
   if (typeof savePairChoice === 'function') {
     const originalSavePairChoice = savePairChoice;
@@ -43,6 +44,20 @@
       return { ...out, rules: [...new Set(rules)].slice(0,12), summary: `${out.summary} Comentários A/B também entram no perfil quando você explica o motivo da escolha.` };
     };
     try { refreshLocalProfile(); } catch {}
+  }
+
+  if (typeof renderAccuracy === 'function') {
+    renderAccuracy = function() {
+      const sessions = (history || []).filter(x => x.id !== currentSessionId && Number.isFinite(x.agreement));
+      const current = typeof calculateCurrentAgreement === 'function' ? calculateCurrentAgreement() : null;
+      const vals = [...sessions.map(x => x.agreement), ...(current != null ? [current] : [])];
+      const overall = vals.length ? Math.round(vals.reduce((a,b) => a + b, 0) / vals.length) : null;
+      const value = document.getElementById('accuracyValue');
+      const hint = document.getElementById('accuracyHint');
+      if (value) value.textContent = overall == null ? 'Ainda sem dados' : `${overall}% de concordância média`;
+      if (hint) hint.textContent = vals.length ? `Baseado em ${vals.length} sessão(ões) com avaliações suas.` : 'Depois que você avaliar as escolhas da IA, esta métrica mostra se ela está se aproximando do seu gosto.';
+    };
+    try { renderAccuracy(); } catch {}
   }
 
   const refineBtn = document.getElementById('refineProfileBtn');
