@@ -94,6 +94,23 @@
     <button id="clearHistoryBtn" class="ghost danger small">Apagar histórico</button>
   </section>
 </main>
+<script>
+(function(){
+  try{
+    if(!localStorage.getItem('seletor-unhas-profile-v2')){
+      var old=JSON.parse(localStorage.getItem('seletor-unhas-training-v1')||'[]');
+      if(Array.isArray(old)&&old.length){
+        localStorage.setItem('seletor-unhas-profile-v2',JSON.stringify({schemaVersion:2,examples:old,pairwise:[],learnedProfile:{summary:'Perfil migrado das avaliações anteriores. O resumo será recalculado automaticamente.',rules:[],updatedAt:new Date().toISOString(),source:'local'}}));
+      }
+    }
+    if(!localStorage.getItem('seletor-unhas-config-v10')){
+      var oldCfg=JSON.parse(localStorage.getItem('seletor-unhas-config-v06')||'{}');
+      var migrated={threshold:Number(oldCfg.threshold)||22,maxPerGroup:4,finalCount:5,maxFinalists:12,model:'gpt-5.6-terra',usdBrl:5.10,proxyUrl:''};
+      localStorage.setItem('seletor-unhas-config-v10',JSON.stringify(migrated));
+    }
+  }catch(e){}
+})();
+</script>
 <script src="./app.js?v=10"></script>
 </body>
 </html>
