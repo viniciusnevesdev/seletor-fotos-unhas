@@ -1,4 +1,4 @@
-const CACHE='seletor-unhas-v10-final';
+const CACHE='seletor-unhas-v10-final2';
 const ASSETS=['./','./index.html','./styles.css?v=10','./app.js?v=10','./v10-fixes.js?v=10','./manifest.webmanifest','./preference-profile.json'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)))});
 self.addEventListener('activate',e=>e.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))),self.clients.claim()])));
